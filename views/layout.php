@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="build/js/app.js"></script>
+    <script src="<?= asset('build/js/app.js') ?>"></script>
     <link rel="shortcut icon" href="<?= asset('images/LogoCiber.png') ?>" type="image/x-icon">
     <link rel="stylesheet" href="<?= asset('build/styles.css') ?>">
     <title> App Ciber</title>
@@ -12,17 +12,13 @@
 
 <body>
     <div class="row justify-content-center bg-dark bg-gradient text-light">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-gradient">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-gradient p-1">
 
             <div class="container-fluid">
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 
-                <a class="navbar-brand" href="/App_CIBER/">
-                    <img src="<?= asset('./images/LogoCiber.png') ?>" width="65px'" alt="cit"> CIBER
-                </a>
+                <a class="navbar-brand" href="/App_CIBER/"><img src="<?= asset('./images/LogoCiber_2.0.png') ?>" width="65px'" alt="cit"> CIBER</a>
 
                 <div class="collapse navbar-collapse" id="navbarToggler">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin: 0;">

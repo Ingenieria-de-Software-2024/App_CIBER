@@ -7,11 +7,9 @@ use Controllers\AppController;
 use Controllers\BitacoraController;
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
-
+$router->comprobarRutas();
 $router->get('/', [AppController::class,'index']);
 
 //BITACORA
 $router->get('/bitacora', [BitacoraController::class,'index']);
 
-// Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
-$router->comprobarRutas();
