@@ -81,3 +81,28 @@ function getHeadersApi(){
 function asset($ruta){
     return "/". $_ENV['APP_NAME']."/public/" . $ruta;
 }
+
+function calcularTotales($registros)
+{
+    $totales = [
+        'malware' => 0,
+        'phishing' => 0,
+        'comando' => 0,
+        'crypto' => 0,
+        'ddos' => 0,
+        'bloqueadas' => 0,
+        'total' => 0
+    ];
+
+    foreach ($registros as $r) {
+        $totales['malware'] += $r->bita_malware;
+        $totales['phishing'] += $r->bita_pishing;
+        $totales['comando'] += $r->bita_coman_cont;
+        $totales['crypto'] += $r->bita_cryptomineria;
+        $totales['ddos'] += $r->bita_ddos;
+        $totales['bloqueadas'] += $r->bita_conex_bloq;
+        $totales['total'] += $r->bita_total;
+    }
+
+    return $totales;
+}

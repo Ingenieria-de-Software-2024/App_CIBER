@@ -1,6 +1,6 @@
 <div class="row mb-3">
   <div class="col text-center">
-    <h1>Aplicación Ciberdefensa</h1>
+    <h1>Aplicación de Incidentes de Ciberdefensa</h1>
   </div>
 </div>
 
@@ -11,3 +11,4 @@
 </div>
 
 <script src="build/js/inicio.js"></script>
+

@@ -38,7 +38,7 @@ class ActiveRecord {
         if(!is_null($this->$id)) {
             // actualizar
             $resultado = $this->actualizar();
-        } else {
+        } else {+
             // Creando un nuevo registro
             $resultado = $this->crear();
         }
@@ -99,27 +99,28 @@ class ActiveRecord {
 
     // crea un nuevo registro
     public function crear() {
-        // Sanitizar los datos
-        $atributos = $this->sanitizarAtributos();
+    $atributos = $this->sanitizarAtributos();
 
-        // Insertar en la base de datos
-        $query = " INSERT INTO " . static::$tabla . " ( ";
-        $query .= join(', ', array_keys($atributos));
-        $query .= " ) VALUES ("; 
-        $query .= join(", ", array_values($atributos));
-        $query .= " ) ";
-        
+    $query = "INSERT INTO " . static::$tabla . " (";
+    $query .= join(', ', array_keys($atributos));
+    $query .= ") VALUES (";
+    $query .= join(", ", array_values($atributos));
+    $query .= ")";
 
-        // debuguear($query);
-
-        // Resultado de la consulta
+    try {
         $resultado = self::$db->exec($query);
 
         return [
-           'resultado' =>  $resultado,
-           'id' => self::$db->lastInsertId(static::$tabla)
+            'resultado' => $resultado,
+            'id' => self::$db->lastInsertId(static::$tabla)
         ];
+    } catch (\PDOException $e) {
+        // Imprime error en consola y lanza para que el controlador lo capture
+        error_log("Error en ActiveRecord::crear() => " . $e->getMessage());
+        throw new \Exception("Error al ejecutar INSERT: " . $e->getMessage());
     }
+}
+
 
     public function actualizar() {
         // Sanitizar los datos
@@ -166,22 +167,19 @@ class ActiveRecord {
         return $resultado;
     }
 
-    public static function consultarSQL($query) {
-        // Consultar la base de datos
-        $resultado = self::$db->query($query);
+    public static function consultarSQL($query, $params = []) {
+        $stmt = self::$db->prepare($query);
+        $stmt->execute($params);
 
-        // Iterar los resultados
         $array = [];
-        while($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+        while($registro = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $array[] = static::crearObjeto($registro);
         }
 
-        // liberar la memoria
-        $resultado->closeCursor();
-
-        // retornar los resultados
+        $stmt->closeCursor();
         return $array;
     }
+
 
     public static function fetchArray($query){
         $resultado = self::$db->query($query);
@@ -225,7 +223,7 @@ class ActiveRecord {
         $atributos = [];
         foreach(static::$columnasDB as $columna) {
             $columna = strtolower($columna);
-            if($columna === 'id' || $columna === static::$idTabla) continue;
+            if($columna === static::$idTabla) continue;
             $atributos[$columna] = $this->$columna;
         }
         return $atributos;
@@ -234,11 +232,19 @@ class ActiveRecord {
     public function sanitizarAtributos() {
         $atributos = $this->atributos();
         $sanitizado = [];
-        foreach($atributos as $key => $value ) {
-            $sanitizado[$key] = self::$db->quote($value);
+
+        foreach($atributos as $key => $value) {
+            if ($key === 'bita_fecha' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                // Para Informix: usar TO_DATE para insertar la fecha correctamente
+                $sanitizado[$key] = "TO_DATE(" . self::$db->quote($value) . ", '%Y-%m-%d')";
+            } else {
+                $sanitizado[$key] = self::$db->quote($value);
+            }
         }
+
         return $sanitizado;
     }
+
 
     public function sincronizar($args=[]) { 
         foreach($args as $key => $value) {
