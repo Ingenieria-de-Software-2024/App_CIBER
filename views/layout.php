@@ -35,7 +35,7 @@
                                     <a class="dropdown-item nav-link text-white " href="/App_CIBER/bitacora"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i> Bitácora</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item nav-link text-white " href="/aplicaciones/nueva"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i> Acumulado</a>
+                                    <a class="dropdown-item nav-link text-white " href="/App_CIBER/acumulado"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i> Acumulado</a>
                                 </li>
                             </ul>
                         </div>

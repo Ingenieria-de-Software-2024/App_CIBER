@@ -56,7 +56,6 @@ class BitacoraController
         }
     }
 
-
     public static function guardarAPI()
     {
         try {
@@ -70,7 +69,6 @@ class BitacoraController
                 exit;
             }
 
-            // Validar formato: debe venir en yyyy-mm-dd
             if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $_POST['bita_fecha'])) {
                 header('Content-Type: application/json');
                 echo json_encode([
@@ -141,7 +139,6 @@ class BitacoraController
         }
     }
 
-
     public static function exportarXLSX()
     {
         try {
@@ -211,9 +208,7 @@ class BitacoraController
                 ? "Del " . date('d/m/Y', strtotime($fechaInicio)) . " al " . date('d/m/Y', strtotime($fechaFin))
                 : "Todos los Registros";
 
-            // Pasar el título como variable global para usarlo en plantilla_pdf.php
             $GLOBALS['tituloGrafico'] = $tituloGrafico;
-
 
             ob_start();
             include_once __DIR__ . '/../views/bitacora/plantilla_pdf.php';
@@ -246,7 +241,6 @@ class BitacoraController
             exit;
         }
     }
-
 
     public static function exportarImagenResumen()
     {
@@ -284,9 +278,4 @@ class BitacoraController
             exit;
         }
     }
-
-
-
-
-
 }
