@@ -39,6 +39,19 @@
                                 </li>
                             </ul>
                         </div>
+                        <div class="nav-item dropdown ">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-card-checklist"></i> Registros
+                            </a>
+                            <ul class="dropdown-menu  dropdown-menu-dark " id="dropwdownRevision" style="margin: 0;">
+                                <li>
+                                    <a class="dropdown-item nav-link text-white " href="/App_CIBER/ciberataque"><i class="bi bi-virus2"></i> Malwares</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item nav-link text-white " href="/aplicaciones/nueva"><i class="bi bi-microsoft"></i> Softwares</a>
+                                </li>
+                            </ul>
+                        </div>
                     </ul>
 
                     <div class="col-lg-1 d-grid mb-2">
