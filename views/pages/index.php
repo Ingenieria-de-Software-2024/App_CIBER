@@ -1,6 +1,6 @@
 <div class="row mb-3">
   <div class="col text-center">
-    <h1>Aplicación de Incidentes de Ciberdefensa</h1>
+    <h1><b>CIBERCOM</b></h1>
   </div>
 </div>
 
