@@ -10,54 +10,98 @@ const btnGuardar   = document.getElementById('btnGuardar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar  = document.getElementById('btnCancelar');
 
-// DataTable
 const datatable = new DataTable('#tablaCiberAtaque', {
   data: null,
   language: lenguaje,
-  pageLength: 15,
+  pageLength: 3,
   lengthMenu: [3, 9, 11, 25, 100],
   columns: [
     {
       title: 'No.',
       data: 'ata_id',
-      width: '2%',
+      width: '0.5%',
       render: (data, type, row, meta) => meta.row + 1
     },
-    { title: 'Nombre', data: 'ata_nombre', render: d => d ? d.toUpperCase() : '' },
-    { title: 'Descripción', data: 'ata_descricion', render: d => d ?? '' },
-    { title: 'Situación', data: 'ata_situacion', visible: false },
+    { 
+      title: 'Nombre', 
+      data: 'ata_nombre',
+      width: '2%', 
+      render: d => d ? d.toUpperCase() : '' 
+    },
+    { 
+      title: 'Descripción', 
+      data: 'ata_descripcion',
+      width: '10%',
+      render: d => d ?? '' 
+    },
+    { 
+      title: 'Situación', 
+      data: 'ata_situacion',
+      visible: false 
+    },
     {
       title: 'Acciones',
       data: 'ata_id',
       searchable: false,
       orderable: false,
-      render: (data, type, row, meta) => `
-        <button class='btn btn-warning modificar'
-                data-ata_id="${data}"
-                data-ata_nombre="${row.ata_nombre ?? ''}"
-                data-ata_descricion='${(row.ata_descricion ?? '').replace(/'/g, "&#39;")}'
-                data-ata_situacion="${row.ata_situacion ?? 1}">
-          <i class='bi bi-pencil-square'></i>
-        </button>
-        <button class='btn btn-danger eliminar' data-ata_id="${data}">
-          <i class="bi bi-trash-fill"></i>
-        </button>
-      `
-    }
-  ]
-});
+      width: '1%',
+      render: (data, type, row, meta) =>
 
-// Estado inicial de botones
+        `
+        <button class='btn btn-warning modificar' 
+        data-ata_id="${data}" 
+        data-ata_nombre="${row.ata_nombre}" 
+        data-ata_descripcion="${row.ata_descripcion}" 
+        data-ata_situacion="${row.ata_situacion ?? 1}">
+        <i class='bi bi-pencil-square'></i></button>
+        
+        <button class='btn btn-danger eliminar' data-ata_id="${data}"><i class="bi bi-trash-fill"></i></button>
+        `
+        
+      }
+    ]
+  }
+);
+
 btnModificar.parentElement.style.display = 'none';
 btnModificar.disabled = true;
 btnCancelar.parentElement.style.display = 'none';
 btnCancelar.disabled = true;
 
-// Guardar
+
+const buscar = async () => {
+  try {
+    Swal.fire({
+      title: 'Cargando...',
+      text: '¡Buscando los registros de Ciber-Ataques',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
+
+    const url = "/App_CIBER/API/ciberataque/buscar";
+    const config = { method: 'GET' };
+
+    const respuesta = await fetch(url, config);
+    const { datos } = await respuesta.json();
+
+    datatable.clear().draw();
+    if (datos) {
+      datatable.rows.add(datos).draw();
+    }
+
+    Swal.close();
+  } catch (error) {
+    Swal.close();
+    console.error(error);
+  }
+};
+buscar();
+
 const guardar = async (e) => {
   e.preventDefault();
 
-  // Excluir el ID oculto en validación de "crear"
   if (!validarFormulario(formulario, ['ata_id'])) {
     Swal.fire({
       title: "Campos vacíos",
@@ -68,83 +112,81 @@ const guardar = async (e) => {
   }
 
   try {
+    
     const body = new FormData(formulario);
-    const url = "/sigecom/API/ciberataque/guardar";
+    const url = "/App_CIBER/API/ciberataque/guardar";
+
     const config = { method: 'POST', body };
 
     const respuesta = await fetch(url, config);
     const { codigo, mensaje } = await respuesta.json();
     const icon = codigo === 1 ? 'success' : 'error';
 
-    Toast.fire({ icon, title: mensaje });
+    Toast.fire({icon, title: mensaje });
+
     if (codigo === 1) {
+
+      Swal.fire({
+        title: '¡Éxito!', 
+        text: mensaje, 
+        icon: 'success', 
+        timer: 3000 
+      });
+
       formulario.reset();
       buscar();
+
     }
+
   } catch (error) {
     console.error(error);
-    Swal.fire({ title: 'Error', text: 'No se pudo guardar el registro.', icon: 'error' });
+    Swal.fire({ 
+      title: 'Error', 
+      text: 'No se pudo guardar el registro.', 
+      icon: 'error' });
   }
 };
 
-// Buscar
-const buscar = async () => {
-  try {
-    const url = "/sigecom/API/ciberataque/buscar";
-    const config = { method: 'GET' };
-
-    const respuesta = await fetch(url, config);
-    const { datos } = await respuesta.json();
-
-    datatable.clear().draw();
-    if (datos) {
-      datatable.rows.add(datos).draw();
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-buscar();
-
-// Traer datos al formulario (Modificar)
 const traerDatos = (e) => {
-  const ds = e.currentTarget.dataset;
+  const btn = e.currentTarget;
 
-  formulario.ata_id.value         = ds.ata_id || '';
-  formulario.ata_nombre.value     = ds.ata_nombre || '';
-  formulario.ata_descricion.value = ds.ata_descricion || '';
-  formulario.ata_situacion.value  = ds.ata_situacion || '1';
+  const ca = {
+    ata_id: btn.getAttribute('data-ata_id'),
+    ata_nombre: btn.getAttribute('data-ata_nombre'),
+    ata_descripcion: btn.getAttribute('data-ata_descripcion'),
+    ata_situacion: btn.getAttribute('data-ata_situacion')
+  };
 
-  // Ocultar tabla mientras editas
+  formulario.ata_id.value          = ca.ata_id || '';
+  formulario.ata_nombre.value      = ca.ata_nombre || '';
+  formulario.ata_descripcion.value = ca.ata_descripcion || '';
+
+  if (formulario.ata_situacion) {
+    formulario.ata_situacion.value = ca.ata_situacion || '1';
+  }
+
   tabla.parentElement.parentElement.style.display = 'none';
 
-  // Alternar botones
   btnGuardar.parentElement.style.display = 'none';
   btnGuardar.disabled = true;
-
   btnModificar.parentElement.style.display = '';
   btnModificar.disabled = false;
-
   btnCancelar.parentElement.style.display = '';
   btnCancelar.disabled = false;
 };
 
-// Cancelar edición
+
 const cancelar = () => {
   tabla.parentElement.parentElement.style.display = '';
   formulario.reset();
-
   btnGuardar.parentElement.style.display = '';
   btnGuardar.disabled = false;
-
   btnModificar.parentElement.style.display = 'none';
   btnModificar.disabled = true;
-
   btnCancelar.parentElement.style.display = 'none';
   btnCancelar.disabled = true;
 };
 
-// Modificar
 const modificar = async (e) => {
   e.preventDefault();
 
@@ -157,18 +199,30 @@ const modificar = async (e) => {
     return;
   }
 
+  btnCancelar.parentElement.style.display = '';
+  btnCancelar.disabled = false;
+
   try {
     const body = new FormData(formulario);
-    const url = "/sigecom/API/ciberataque/modificar";
+    const url = "/App_CIBER/API/ciberataque/modificar";
     const config = { method: 'POST', body };
 
     const respuesta = await fetch(url, config);
     const { codigo, mensaje } = await respuesta.json();
-    const icon = codigo === 1 ? 'success' : 'error';
+    const icon = Number(codigo) === 1 ? 'success' : 'error';
 
     Toast.fire({ icon, title: mensaje });
 
-    if (codigo === 1) {
+    if (Number(codigo) === 1) {
+
+      await Swal.fire({
+        title: '¡Modificado!',
+        text: 'Se ha modificado con éxito.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
       formulario.reset();
       buscar();
       cancelar();
@@ -183,7 +237,6 @@ const modificar = async (e) => {
   }
 };
 
-// Eliminar
 const eliminar = async (boton) => {
   const id = boton.currentTarget.dataset.ata_id;
 
@@ -203,17 +256,26 @@ const eliminar = async (boton) => {
       const body = new FormData();
       body.append('ata_id', id);
 
-      const url = '/sigecom/API/ciberataque/eliminar';
+      const url = '/App_CIBER/API/ciberataque/eliminar';
       const config = { method: 'POST', body };
 
       const respuesta = await fetch(url, config);
       const { codigo, mensaje } = await respuesta.json();
 
       if (codigo === 4) {
-        Swal.fire({ title: '¡Éxito!', text: mensaje, icon: 'success', timer: 1500 });
-        datatable.row(boton.currentTarget.closest('tr')).remove().draw();
+        Swal.fire({ 
+          title: '¡Éxito!', 
+          text: mensaje, 
+          icon: 'success', 
+          timer: 1500 });
+        
+          datatable.row(boton.currentTarget.closest('tr')).remove().draw();
+
       } else {
-        Swal.fire({ title: '¡Error!', text: mensaje, icon: 'error' });
+        Swal.fire({ 
+          title: '¡Error!', 
+          text: mensaje, 
+          icon: 'error' });
       }
     } catch (error) {
       console.error(error);
@@ -222,7 +284,6 @@ const eliminar = async (boton) => {
   }
 };
 
-// Eventos
 formulario.addEventListener('submit', guardar);
 btnCancelar.addEventListener('click', cancelar);
 btnModificar.addEventListener('click', modificar);

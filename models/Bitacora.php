@@ -20,7 +20,7 @@ class Bitacora extends ActiveRecord
         'bita_ddos',
         'bita_conex_bloq',
         'bita_total',
-        'bita_situacion' // ✅ necesario
+        'bita_situacion'
     ];
 
 
@@ -46,7 +46,7 @@ class Bitacora extends ActiveRecord
         $this->bita_ddos = (int)($args['bita_ddos'] ?? 0);
         $this->bita_conex_bloq = (int)($args['bita_conex_bloq'] ?? 0);
         $this->bita_total = (int)($args['bita_total'] ?? 0);
-        $this->bita_situacion = (int)($args['bita_situacion'] ?? 1); // ✅ Valor por defecto: activo
+        $this->bita_situacion = (int)($args['bita_situacion'] ?? 1);
     }
 
     public function validar(): array

@@ -18,9 +18,9 @@ $router->post('/API/bitacora/guardar', [BitacoraController::class,'guardarAPI'])
 
 // CIBERATAQUES
 $router->get('/ciberataque', [CiberAtaqueController::class,'index']);
+$router->get('/API/ciberataque/buscar', [CiberAtaqueController::class,'buscarAPI']);
 $router->post('/API/ciberataque/guardar', [CiberAtaqueController::class,'guardarAPI']);
 $router->post('/API/ciberataque/modificar', [CiberAtaqueController::class,'modificarAPI']);
-$router->get('/API/ciberataque/buscar', [CiberAtaqueController::class,'buscarAPI']);
 $router->post('/API/ciberataque/eliminar', [CiberAtaqueController::class,'eliminarAPI']);
 
 

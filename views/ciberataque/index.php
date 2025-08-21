@@ -3,7 +3,7 @@
 <div class="row justify-content-center text-center p-5">
 
   <div class="col-lg-3">
-    <form id="formCiberAtaque" class="border bg-white shadow-lg rounded p-4 mx-auto my-5">
+    <form id="formCiberAtaque" class="border bg-light bg-gradient rounded p-4 mx-auto my-5">
       <h2 class="text-primary fw-bold">Registro</h2>
       <i class="bi bi-shield-lock text-secondary" style="font-size: 4rem;"></i>
       <input type="hidden" name="ata_id" id="ata_id">
@@ -17,8 +17,8 @@
 
       <div class="row mt-3 mb-3">
         <div class="col">
-          <label for="ata_descricion" class="form-label fw-bold text-dark">Descripción</label>
-          <textarea name="ata_descricion" id="ata_descricion" class="form-control border-primary"></textarea>
+          <label for="ata_descripcion" class="form-label fw-bold text-dark">Descripción</label>
+          <input name="ata_descripcion" id="ata_descripcion" class="form-control border-primary">
         </div>
       </div>
 
@@ -42,7 +42,8 @@
     </form>
   </div>
 
-  <div class="col-lg-9 border bg-white shadow-lg rounded mx-auto my-5 text-dark">
+  <div class="col-lg-9 border bg-light
+   shadow-lg rounded mx-auto my-5 text-dark">
     <h2 class="mb-3 mt-3 fw-bold text-primary">Ciberataques</h2>
     <table class="table table-bordered table-hover w-100 text-center shadow mt-3" id="tablaCiberAtaque"></table>
   </div>
